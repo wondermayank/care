@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Routine — Care Helper</title>
+<meta name="description" content="Your personalized weekly skincare routine, hair wash schedule, makeup tutorial, and do/don't list, generated from your quiz answers.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="dashboard">
+
+<div id="loading-screen">
+  <svg class="loader-ring" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20"></circle></svg>
+</div>
+
+<header class="top-nav">
+  <div class="wrap flex items-center justify-between" style="width:100%;">
+    <a href="index.html" class="brand"></a>
+    <nav class="nav-links" id="nav-links"></nav>
+  </div>
+</header>
+
+<main id="dashboard-root">
+
+  <section class="section section--light">
+    <div class="wrap">
+      <div id="profile-summary"></div>
+    </div>
+  </section>
+
+  <section class="section section--parchment hidden" id="routine-section">
+    <div class="wrap">
+      <p class="label-uppercase" style="color:var(--primary);">Skin Care</p>
+      <h2 class="display-md mt-md mb-lg">Your weekly skincare routine</h2>
+      <div class="card" style="overflow-x:auto; padding:0;">
+        <table class="routine-table" id="routine-table"></table>
+      </div>
+      <p class="caption mt-md" id="treatment-note"></p>
+    </div>
+  </section>
+
+  <section class="section section--light hidden" id="dodont-section">
+    <div class="wrap">
+      <h2 class="display-md mb-lg">Do's and don'ts for you</h2>
+      <div class="grid grid-2">
+        <div>
+          <h3 class="title-md mb-md flex items-center gap-xs" style="color:var(--success);">Do</h3>
+          <div id="do-list"></div>
+        </div>
+        <div>
+          <h3 class="title-md mb-md flex items-center gap-xs" style="color:var(--error);">Don't</h3>
+          <div id="dont-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark hidden" id="hair-section">
+    <div class="wrap">
+      <p class="label-uppercase" style="color:var(--primary);">Hair Care</p>
+      <h2 class="display-md mt-md mb-lg">Your hair wash schedule</h2>
+      <div id="hair-content"></div>
+    </div>
+  </section>
+
+  <section class="section section--parchment hidden" id="makeup-section">
+    <div class="wrap">
+      <p class="label-uppercase" style="color:var(--primary);">Makeup</p>
+      <div id="makeup-content"></div>
+    </div>
+  </section>
+
+  <section class="section section--light hidden" id="bath-section">
+    <div class="wrap">
+      <h2 class="display-md mb-lg">Bath & personal care picks</h2>
+      <div class="grid grid-2">
+        <div>
+          <h3 class="title-md mb-md">Bath & body</h3>
+          <div class="grid grid-2" id="bath-grid"></div>
+        </div>
+        <div>
+          <h3 class="title-md mb-md">Personal care</h3>
+          <div class="grid grid-2" id="personal-care-grid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Care Helper</h4>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">My Routine</a>
+        <a href="products.html">Product Library</a>
+      </div>
+      <div class="footer-col">
+        <h4>This Plan</h4>
+        <a href="index.html?edit=true">Edit my answers</a>
+        <a href="index.html">Switch profile</a>
+        <a href="products.html">Browse all products</a>
+      </div>
+      <div class="footer-col">
+        <h4>Good To Know</h4>
+        <span class="fine-print" style="display:block;margin-bottom:8px;">Routines are general guidance, not medical or dermatological advice.</span>
+        <span class="fine-print" style="display:block;">Always patch-test a new product for 48 hours before full use.</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="fine-print">© 2026 Care Helper. Icons by Lucide (ISC License). All data stored locally in your browser — nothing is sent to a server.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="data/db-skin-types.js"></script>
+<script src="data/db-skin-issues.js"></script>
+<script src="data/db-unsuitable-items.js"></script>
+<script src="data/db-skin-products.js"></script>
+<script src="data/db-hair-types.js"></script>
+<script src="data/db-hair-products.js"></script>
+<script src="data/db-bath-products.js"></script>
+<script src="data/db-personal-care.js"></script>
+<script src="data/db-makeup-products.js"></script>
+<script src="data/db-makeup-tutorials.js"></script>
+<script src="data/db-preferences.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/store.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/routine-engine.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
