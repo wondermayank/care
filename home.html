@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Care Helper — Your Personalised Beauty Routine</title>
+<meta name="description" content="Answer a short quiz and get your personalised weekly skincare routine, hair wash schedule, makeup tutorial, and product picks — all in your browser, no account needed.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+
+<div id="loading-screen">
+  <svg class="loader-ring" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20"></circle></svg>
+</div>
+
+<header class="top-nav">
+  <div class="wrap flex items-center justify-between" style="width:100%;">
+    <a href="home.html" class="brand"></a>
+    <nav class="nav-links" id="nav-links"></nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- Hero -->
+  <section class="hero-section">
+    <div class="wrap">
+      <p class="label-uppercase" style="color:var(--primary-focus); margin-bottom:var(--sp-sm);">Free · No account · Stays in your browser</p>
+      <h1 class="hero-display" style="max-width:680px; margin-bottom:var(--sp-md);">
+        Your routine. Your rules. Every week.
+      </h1>
+      <p class="body-light" style="max-width:500px; margin-bottom:var(--sp-xl);">
+        Answer 7 quick questions and get a personalised skincare schedule, hair wash plan, makeup tutorial, and curated product picks — built for your skin, your hair, and your lifestyle.
+      </p>
+      <div class="flex gap-sm" style="flex-wrap:wrap;">
+        <a href="#quiz-section" class="btn btn-primary" onclick="document.getElementById('quiz-section').scrollIntoView({behavior:'smooth'}); return false;">
+          Build My Routine
+        </a>
+        <a href="products.html" class="btn btn-secondary">Browse Products</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Welcome back banner (shown by home.js if a profile exists) -->
+  <section class="section section--parchment">
+    <div class="wrap">
+      <div id="welcome-back" class="hidden"></div>
+
+      <!-- How it works -->
+      <h2 class="display-md mb-lg text-center" style="text-align:center;">How it works</h2>
+      <div class="grid grid-3" style="gap:var(--sp-xl);">
+        <div class="how-step">
+          <div class="how-icon" id="how-icon-1"></div>
+          <div>
+            <h3 class="title-md mb-sm">Tell us about yourself</h3>
+            <p class="body-sm" style="color:var(--muted);">Skin type, hair type, concerns, and preferences. Takes under 2 minutes.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-icon" id="how-icon-2"></div>
+          <div>
+            <h3 class="title-md mb-sm">We build your plan</h3>
+            <p class="body-sm" style="color:var(--muted);">Our engine matches products and routines to your exact profile — no guesswork.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="how-icon" id="how-icon-3"></div>
+          <div>
+            <h3 class="title-md mb-sm">Follow your weekly schedule</h3>
+            <p class="body-sm" style="color:var(--muted);">A full 7-day routine table, hair wash days, makeup steps, and do/don't tips — all in one place.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats row -->
+  <section class="section section--light">
+    <div class="wrap">
+      <h2 class="display-md mb-lg" style="text-align:center;">What's inside your plan</h2>
+      <div class="grid grid-4" id="stats-grid"></div>
+    </div>
+  </section>
+
+  <!-- Quiz -->
+  <section class="quiz-section" id="quiz-section">
+    <div class="wrap">
+      <div class="quiz-card-wrap">
+        <div class="progress-dots" id="progress-dots"></div>
+        <div class="card" id="quiz-card" style="padding:var(--sp-xl);"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Care Helper</h4>
+        <a href="home.html">Home</a>
+        <a href="index.html">My Routine</a>
+        <a href="products.html">Product Library</a>
+      </div>
+      <div class="footer-col">
+        <h4>This Plan</h4>
+        <a href="home.html?edit=true">Edit my answers</a>
+        <a href="home.html">Switch profile</a>
+        <a href="products.html">Browse all products</a>
+      </div>
+      <div class="footer-col">
+        <h4>Good To Know</h4>
+        <span class="fine-print" style="display:block;margin-bottom:8px;">Routines are general guidance, not medical or dermatological advice.</span>
+        <span class="fine-print" style="display:block;">Always patch-test a new product for 48 hours before full use.</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="fine-print">© 2026 Care Helper. Icons by Lucide (ISC License). All data stored locally in your browser — nothing is sent to a server.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="db-skin-types.js"></script>
+<script src="db-skin-issues.js"></script>
+<script src="db-unsuitable-items.js"></script>
+<script src="db-skin-products.js"></script>
+<script src="db-hair-types.js"></script>
+<script src="db-hair-products.js"></script>
+<script src="db-bath-products.js"></script>
+<script src="db-personal-care.js"></script>
+<script src="db-makeup-products.js"></script>
+<script src="db-makeup-tutorials.js"></script>
+<script src="db-preferences.js"></script>
+<script src="icons.js"></script>
+<script src="store.js"></script>
+<script src="theme.js"></script>
+<script src="nav.js"></script>
+<script src="home.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Library — Care Helper</title>
+<meta name="description" content="Browse all skincare, haircare, makeup, bath and personal care products in the Care Helper database, filtered by category and your skin type.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="products">
+
+<div id="loading-screen">
+  <svg class="loader-ring" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20"></circle></svg>
+</div>
+
+<header class="top-nav">
+  <div class="wrap flex items-center justify-between" style="width:100%;">
+    <a href="home.html" class="brand"></a>
+    <nav class="nav-links" id="nav-links"></nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="section section--parchment" style="padding-bottom:var(--sp-lg);">
+    <div class="wrap">
+      <p class="label-uppercase" style="color:var(--primary);">Library</p>
+      <h1 class="display-md mt-sm mb-sm">Product Library</h1>
+      <p class="body-light" style="max-width:520px;">Every product in the Care Helper database. Use the filters to narrow by category. Your personalised picks are highlighted if you have a saved profile.</p>
+    </div>
+  </section>
+
+  <section class="section section--light">
+    <div class="wrap">
+
+      <!-- Filter bar -->
+      <div class="filter-bar" id="filter-bar"></div>
+
+      <!-- Search -->
+      <div class="field" style="max-width:320px; margin-bottom:var(--sp-xl);">
+        <input id="search-input" type="search" placeholder="Search products…" oninput="filterProducts()" />
+      </div>
+
+      <!-- Results count -->
+      <p class="caption mb-md" id="results-count"></p>
+
+      <!-- Product grid -->
+      <div class="grid grid-3" id="product-grid" style="align-items:start;"></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Care Helper</h4>
+        <a href="home.html">Home</a>
+        <a href="index.html">My Routine</a>
+        <a href="products.html">Product Library</a>
+      </div>
+      <div class="footer-col">
+        <h4>Your Plan</h4>
+        <a href="home.html?edit=true">Edit my answers</a>
+        <a href="home.html">Switch profile</a>
+      </div>
+      <div class="footer-col">
+        <h4>Good To Know</h4>
+        <span class="fine-print" style="display:block;margin-bottom:8px;">Products shown are illustrative. Always patch-test for 48 hours before full use.</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="fine-print">© 2026 Care Helper. Icons by Lucide (ISC License). All data stored locally in your browser — nothing is sent to a server.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="db-skin-types.js"></script>
+<script src="db-skin-issues.js"></script>
+<script src="db-unsuitable-items.js"></script>
+<script src="db-skin-products.js"></script>
+<script src="db-hair-types.js"></script>
+<script src="db-hair-products.js"></script>
+<script src="db-bath-products.js"></script>
+<script src="db-personal-care.js"></script>
+<script src="db-makeup-products.js"></script>
+<script src="db-makeup-tutorials.js"></script>
+<script src="db-preferences.js"></script>
+<script src="icons.js"></script>
+<script src="store.js"></script>
+<script src="theme.js"></script>
+<script src="routine-engine.js"></script>
+<script src="nav.js"></script>
+<script>
+/* ===========================================================
+   PRODUCTS PAGE — inline JS (self-contained)
+   =========================================================== */
+
+// Merge all products into one flat list with a "source" label
+const ALL_PRODUCTS = [
+  ...DB_SKIN_PRODUCTS.map(p  => ({ ...p, source: "Skin Care" })),
+  ...DB_HAIR_PRODUCTS.map(p  => ({ ...p, source: "Hair Care" })),
+  ...DB_BATH_PRODUCTS.map(p  => ({ ...p, source: "Bath & Body" })),
+  ...DB_PERSONAL_CARE.map(p  => ({ ...p, source: "Personal Care" })),
+  ...DB_MAKEUP_PRODUCTS.map(p => ({ ...p, source: "Makeup" }))
+];
+
+const CATEGORIES = ["All", "Skin Care", "Hair Care", "Bath & Body", "Makeup", "Personal Care"];
+let activeCategory = "All";
+let profilePicks = new Set();
+
+// Determine which products are in the current user's plan
+(function loadProfilePicks() {
+  const profile = chStoreGetCurrentProfile();
+  if (!profile) return;
+  const plan = buildFullPlan(profile);
+  const sp = plan.skinPlan.products;
+  const hp = plan.hairPlan;
+  const mp = plan.makeupPlan;
+  const bp = plan.bathPlan;
+
+  [sp.cleanser, sp.moisturizer, sp.sunscreen, sp.amSerum, sp.pmSerum,
+   sp.eyeCream, sp.treatment, sp.mask,
+   hp.shampoo, hp.conditioner, hp.oil, hp.leaveIn, hp.heatProtectant]
+    .filter(Boolean).forEach(p => profilePicks.add(p.id));
+
+  (mp.steps || []).forEach(s => { if (s.product) profilePicks.add(s.product.id); });
+  (bp.bathItems || []).forEach(p => profilePicks.add(p.id));
+  (bp.personalCare || []).forEach(p => profilePicks.add(p.id));
+})();
+
+function buildFilterBar() {
+  const bar = document.getElementById("filter-bar");
+  if (!bar) return;
+  bar.innerHTML = CATEGORIES.map(cat =>
+    `<button class="filter-chip${cat === activeCategory ? " active" : ""}" onclick="setCategory('${cat}')">${cat}</button>`
+  ).join("");
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  buildFilterBar();
+  filterProducts();
+}
+
+function filterProducts() {
+  const query = (document.getElementById("search-input")?.value || "").toLowerCase().trim();
+  const grid  = document.getElementById("product-grid");
+  const count = document.getElementById("results-count");
+  if (!grid) return;
+
+  let results = ALL_PRODUCTS.filter(p => {
+    const matchCat = activeCategory === "All" || p.source === activeCategory;
+    const matchQ   = !query ||
+      p.name.toLowerCase().includes(query) ||
+      (p.desc || "").toLowerCase().includes(query) ||
+      (p.category || "").toLowerCase().includes(query) ||
+      (p.source || "").toLowerCase().includes(query);
+    return matchCat && matchQ;
+  });
+
+  // Sort: profile picks first
+  results.sort((a, b) => {
+    const pa = profilePicks.has(a.id) ? 0 : 1;
+    const pb = profilePicks.has(b.id) ? 0 : 1;
+    return pa - pb || a.source.localeCompare(b.source) || a.category.localeCompare(b.category);
+  });
+
+  if (count) count.textContent = `${results.length} product${results.length !== 1 ? "s" : ""}`;
+
+  grid.innerHTML = results.map(p => {
+    const isPick = profilePicks.has(p.id);
+    return `
+      <div class="card" style="padding:var(--sp-md); position:relative; ${isPick ? "border:1.5px solid var(--primary);" : ""}">
+        ${isPick ? `<span class="label-uppercase" style="position:absolute;top:var(--sp-sm);right:var(--sp-sm);color:var(--primary);font-size:10px;">Your Pick</span>` : ""}
+        <div class="flex gap-sm items-start mb-sm">
+          <span style="color:var(--primary); flex-shrink:0;">${icon(p.icon || "sparkle", "icon-lg")}</span>
+          <div>
+            <p class="body-sm" style="font-weight:600; margin:0 0 2px;">${p.name}</p>
+            <p class="caption" style="margin:0;">${p.source} · ${p.category}</p>
+          </div>
+        </div>
+        <p class="caption">${p.desc || ""}</p>
+        ${(p.tags && p.tags.length) ? `<p class="caption mt-xs" style="color:var(--warning);">${icon("alert-triangle")} Contains: ${p.tags.join(", ")}</p>` : ""}
+        ${(p.suitableFor && !p.suitableFor.includes("all")) ? `<p class="caption mt-xs" style="color:var(--muted);">Best for: ${(p.suitableFor).join(", ")}</p>` : ""}
+        ${p.freq ? `<p class="caption mt-xs">${icon("calendar")} ${p.freq}</p>` : ""}
+      </div>`;
+  }).join("") || `<p class="body-light" style="grid-column:1/-1; color:var(--muted);">No products match your search.</p>`;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  buildFilterBar();
+  filterProducts();
+});
+</script>
+</body>
+</html>
