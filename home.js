@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
     banner.innerHTML = `
       <p class="body-md mb-sm"><strong>Welcome back, ${current.name}.</strong> You already have a saved care plan.</p>
       <div class="flex gap-sm" style="flex-wrap:wrap;">
-        <a href="dashboard.html" class="btn btn-primary btn-sm">View My Plan</a>
+        <a href="index.html" class="btn btn-primary btn-sm">View My Plan</a>
         <button class="btn btn-secondary btn-sm" onclick="document.getElementById('quiz-section').scrollIntoView({behavior:'smooth'})">Start Over / New Profile</button>
       </div>
     `;

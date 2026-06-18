@@ -192,7 +192,7 @@ function qSubmit(){
     updatedAt: new Date().toISOString()
   };
   chStoreSaveProfile(profile);
-  window.location.href = "dashboard.html";
+  window.location.href = "index.html";
 }
 
 document.addEventListener("DOMContentLoaded", function(){
