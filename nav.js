@@ -10,7 +10,7 @@ function chRenderNav(activePage){
   if(navLinks){
     const links = [
       { href: "home.html", label: "Home", key: "home" },
-      { href: "index.html", label: "My Routine", key: "dashboard" },
+      { href: "dashboard.html", label: "My Routine", key: "dashboard" },
       { href: "products.html", label: "Product Library", key: "products" }
     ];
     navLinks.innerHTML = links.map(l =>
